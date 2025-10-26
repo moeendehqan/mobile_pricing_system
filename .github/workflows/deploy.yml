@@ -21,7 +21,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy: git pull & docker compose
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -31,20 +31,17 @@ jobs:
           timeout: 30m
           script: |
             set -e
-            # مسیر پروژه روی سرور
-            cd ${REMOTE_APP_PATH:-/home/${{ secrets.SSH_USER }}/app} || exit 1
+            APP_PATH="${REMOTE_APP_PATH:-/home/${SSH_USER}/app}"
 
-            # اگه داره از git مدیریت می‌شه:
+            cd "$APP_PATH" || exit 1
+
+            echo "Pulling latest code..."
             git fetch --all
             git checkout ${GIT_BRANCH:-main}
             git reset --hard origin/${GIT_BRANCH:-main}
 
-            # (اگر نیاز به ساخت فایل .env داری، می‌تونی اینجا بسازی)
-            # echo "DJANGO_SECRET_KEY=..." > .env
-
-            # بروزرسانی و ری‌بیلد
+            echo "Rebuilding Docker containers..."
             docker compose pull || true
             docker compose up -d --build
 
-            # بررسی سریع وضعیت
             docker compose ps
