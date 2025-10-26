@@ -4,5 +4,7 @@ services:
     build: .
     ports:
       - "4040:8000"
+    volumes:
+      - /var/www/shikala/staticfiles:/app/staticfiles
     env_file:
       - .env
