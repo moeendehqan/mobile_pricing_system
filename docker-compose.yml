@@ -6,6 +6,6 @@ services:
     ports:
       - "4040:8000"
     volumes:
-      - .:/app
+      - ./staticfiles:/var/www/shikala/staticfiles
     env_file:
       - .env
