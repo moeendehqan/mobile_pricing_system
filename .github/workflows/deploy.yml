@@ -39,12 +39,18 @@ jobs:
             APP_PATH="${REMOTE_APP_PATH:-/home/${SSH_USER}/app}"
 
             echo "📂 Changing directory to: $APP_PATH"
-            cd "$APP_PATH" || { echo "❌ Directory not found"; exit 1; }
+            mkdir -p "$APP_PATH"
+            cd "$APP_PATH"
 
-            echo "🔄 Pulling latest code..."
-            git fetch --all
-            git checkout ${GIT_BRANCH}
-            git reset --hard origin/${GIT_BRANCH}
+            if [ ! -d ".git" ]; then
+              echo "🌀 Cloning repository..."
+              git clone -b ${GIT_BRANCH:-main} https://github.com/${{ github.repository }} .
+            else
+              echo "🔄 Pulling latest code..."
+              git fetch --all
+              git checkout ${GIT_BRANCH:-main}
+              git reset --hard origin/${GIT_BRANCH:-main}
+            fi
 
             echo "🐳 Rebuilding Docker containers..."
             docker compose pull || true
