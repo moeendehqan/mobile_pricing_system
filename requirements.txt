@@ -4,7 +4,6 @@ django-cors-headers
 djangorestframework-simplejwt
 drf-spectacular
 psycopg2-binary
-psycopg2
 zeep
 requests
 aiohttp
