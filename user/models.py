@@ -1,9 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from wagtail.snippets.models import register_snippet
 
-@register_snippet
 class User(AbstractUser):
     username = models.CharField(
         max_length=255,
@@ -148,7 +146,6 @@ class User(AbstractUser):
 
 
 
-@register_snippet
 class Otp(models.Model):
     mobile = models.CharField(max_length=255)
     otp = models.CharField(max_length=6)

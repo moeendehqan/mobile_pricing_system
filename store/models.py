@@ -1,6 +1,5 @@
 from django.db import models
 from user.models import User
-from wagtail.snippets.models import register_snippet
 from colorfield.fields import ColorField
 
 
@@ -289,7 +288,6 @@ class Product (models.Model):
     def __str__(self):
         return f"{self.id} - {self.model_mobile.model_name} - {self.price}"
 
-@register_snippet
 class Order (models.Model) :
     product = models.ForeignKey(
         Product,
