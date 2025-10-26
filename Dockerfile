@@ -13,4 +13,4 @@ RUN pip install gunicorn
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
-CMD ["gunicorn", "shikala.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "mobile_pricing_system.wsgi:application", "--bind", "0.0.0.0:8000"]
