@@ -10,8 +10,6 @@ COPY . .
 
 RUN pip install gunicorn
 
-RUN mkdir -p /var/www/shikala/staticfiles
-
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
