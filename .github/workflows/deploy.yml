@@ -23,25 +23,32 @@ jobs:
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.7
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          REMOTE_APP_PATH: ${{ secrets.REMOTE_APP_PATH }}
+          GIT_BRANCH: main
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           timeout: 30m
+          envs: SSH_USER,REMOTE_APP_PATH,GIT_BRANCH
           script: |
             set -e
             APP_PATH="${REMOTE_APP_PATH:-/home/${SSH_USER}/app}"
 
-            cd "$APP_PATH" || exit 1
+            echo "📂 Changing directory to: $APP_PATH"
+            cd "$APP_PATH" || { echo "❌ Directory not found"; exit 1; }
 
-            echo "Pulling latest code..."
+            echo "🔄 Pulling latest code..."
             git fetch --all
-            git checkout ${GIT_BRANCH:-main}
-            git reset --hard origin/${GIT_BRANCH:-main}
+            git checkout ${GIT_BRANCH}
+            git reset --hard origin/${GIT_BRANCH}
 
-            echo "Rebuilding Docker containers..."
+            echo "🐳 Rebuilding Docker containers..."
             docker compose pull || true
             docker compose up -d --build
 
+            echo "✅ Containers status:"
             docker compose ps
