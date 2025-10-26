@@ -39,7 +39,6 @@ CORS_ALLOW_METHODS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'taggit',
     'django.contrib.admin',
     'corsheaders',
     'django.contrib.auth',
