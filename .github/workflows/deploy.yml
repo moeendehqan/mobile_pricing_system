@@ -1,0 +1,50 @@
+name: Deploy to server (via SSH)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Ensure known_hosts has server fingerprint
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy: git pull & docker compose
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 30m
+          script: |
+            set -e
+            # مسیر پروژه روی سرور
+            cd ${REMOTE_APP_PATH:-/home/${{ secrets.SSH_USER }}/app} || exit 1
+
+            # اگه داره از git مدیریت می‌شه:
+            git fetch --all
+            git checkout ${GIT_BRANCH:-main}
+            git reset --hard origin/${GIT_BRANCH:-main}
+
+            # (اگر نیاز به ساخت فایل .env داری، می‌تونی اینجا بسازی)
+            # echo "DJANGO_SECRET_KEY=..." > .env
+
+            # بروزرسانی و ری‌بیلد
+            docker compose pull || true
+            docker compose up -d --build
+
+            # بررسی سریع وضعیت
+            docker compose ps
