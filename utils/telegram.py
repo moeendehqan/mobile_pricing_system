@@ -17,16 +17,16 @@ class Telegram:
             'chat_id': chat_id,
             'text': text,
         }
-        response = requests.post(self.url + 'sendMessage', params=params)
+        response = requests.post(self.url + 'sendMessage', data=params)
         return response.json()
     def send_photo(self, chat_id, photo, caption=None):
         params = {
             'chat_id': chat_id,
             'photo': photo,
         }
-        if caption:
+        if caption is not None:
             params['caption'] = caption
-        response = requests.post(self.url + 'sendPhoto', params=params)
+        response = requests.post(self.url + 'sendPhoto', data=params)
         return response.json()
 
     def send_product_to_channel(self, text, image=None):

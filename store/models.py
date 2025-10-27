@@ -300,10 +300,10 @@ class Product (models.Model):
         ordering = ['-seller__vip_sort','-created_at']
     def __str__(self):
         return f"{self.id} - {self.model_mobile.model_name} - {self.price}"
-    def send_channel(self, obj):
+    def send_channel(self):
         telegram = Telegram()
         model_name = self.model_mobile.model_name if self.model_mobile else 'نامشخص'
-        text = f'محصول {model_name} با قیمت {self.price}'
+        text = f'محصول {model_name} با قیمت {self.price}\n{self.grade} - {self.type_product}'
         first_picture = self.picture.first()
         image_url = None
         if first_picture and getattr(first_picture, 'file', None):
@@ -314,7 +314,7 @@ class Product (models.Model):
         telegram.send_product_to_channel(text, image_url)
     
     def save(self, *args, **kwargs):
-        self.send_channel(self)
+        self.send_channel()
         super().save(*args, **kwargs)
 
 class Order (models.Model) :
