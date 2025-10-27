@@ -1,7 +1,7 @@
 from django.db import models
 from user.models import User
 from colorfield.fields import ColorField
-
+from utils.telegram import Telegram
 
 
 
@@ -287,6 +287,14 @@ class Product (models.Model):
         ordering = ['-seller__vip_sort','-created_at']
     def __str__(self):
         return f"{self.id} - {self.model_mobile.model_name} - {self.price}"
+    def send_channel(self, text):
+        telegram = Telegram()
+        telegram.send_message(self.chat_id_channel, text)
+        return telegram.send_message(self.chat_id_channel, text)
+    
+    def save(self, *args, **kwargs):
+        self.send_channel(f'محصول {self.model_mobile.model_name} با قیمت {self.price} تومان فروخته شد')
+        super().save(*args, **kwargs)
 
 class Order (models.Model) :
     product = models.ForeignKey(

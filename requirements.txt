@@ -9,3 +9,5 @@ requests
 aiohttp
 asyncio
 django-colorfield
+boto3
+django-storages

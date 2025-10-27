@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'user',
     'store',
     'rest_framework_simplejwt.token_blacklist',
@@ -164,3 +165,9 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
+
+
+
+#----- TELEGRAM
+TELEGRAM_TOKEN = '8420073319:AAFFEf0Gi0LhNXXhKMe0TFKFSkAWoEJ9FiI'
+CHAT_ID_CHANNEL = '-1003215317476'
