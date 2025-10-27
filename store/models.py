@@ -297,7 +297,6 @@ class Product (models.Model):
     def send_channel(self, text):
         telegram = Telegram()
         telegram.send_product_to_channel(text)
-        return telegram.send_message(self.chat_id_channel, text)
     
     def save(self, *args, **kwargs):
         self.send_channel(f'محصول {self.model_mobile.model_name} با قیمت {self.price} تومان فروخته شد')
