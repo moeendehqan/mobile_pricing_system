@@ -24,10 +24,11 @@ class MediaStorage(S3Boto3Storage):
     region_name = 'us-east-1'
     signature_version = 's3v4'
     addressing_style = 'path'
+    
 
 class StaticStorage(S3Boto3Storage):
     bucket_name = 'shikala'
-    location = 'static'  # prefix داخل bucket
+    location = 'static'
     endpoint_url = 'https://minio.shikala.com'
     access_key = 'M0P0pT0ShSorWYCpePCi'
     secret_key = 'E0k68nU1A1VYJtVSKI3Eh7VMIPlJ5znmk9ib0LEF'
