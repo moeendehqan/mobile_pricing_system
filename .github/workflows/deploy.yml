@@ -94,12 +94,8 @@ jobs:
             DB_PORT=${{ secrets.DB_PORT }}
             EOF
 
-            echo "🐳 Pulling prebuilt image and starting containers..."
-            docker compose -f docker-compose.yml -f docker-compose.prod.yml pull || true
-            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-
-            echo "🧹 Collecting static files in running container..."
-            docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput || true
+            echo "🐳 Starting containers with latest image..."
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --pull always
 
             echo "✅ Containers status:"
             docker compose ps
