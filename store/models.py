@@ -296,12 +296,16 @@ class Product (models.Model):
         return f"{self.id} - {self.model_mobile.model_name} - {self.price}"
     def send_channel(self, obj):
         telegram = Telegram()
-        text = f'محصول {self.model_mobile.model_name} با قیمت {self.price}'
-        image = self.picture.first().file
-        if image:
-            telegram.send_product_to_channel(text,image.url)
-        else:
-            telegram.send_product_to_channel(text)
+        model_name = self.model_mobile.model_name if self.model_mobile else 'نامشخص'
+        text = f'محصول {model_name} با قیمت {self.price}'
+        first_picture = self.picture.first()
+        image_url = None
+        if first_picture and getattr(first_picture, 'file', None):
+            try:
+                image_url = first_picture.file.url
+            except Exception:
+                image_url = None
+        telegram.send_product_to_channel(text, image_url)
     
     def save(self, *args, **kwargs):
         self.send_channel(self)
