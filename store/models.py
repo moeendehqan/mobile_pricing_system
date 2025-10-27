@@ -384,7 +384,10 @@ class Product (models.Model):
         status_product_line = f"<b>📦 وضعیت فروش:</b> {status_product_disp}" if status_product_disp else None
         price_line = f"<b>💰 قیمت:</b> {self.price:,} تومان" if self.price else "<b>💰 قیمت:</b> نامشخص"
         part_line = f"<b>🧩 پارت نامبر:</b> {escape(self.part_num)}" if self.part_num else None
-        seller_line = f"<b>👤 فروشنده:</b> {escape(self.seller.username)}" if self.seller else None
+        seller_line = None
+        if self.seller:
+            masked = self._mask_text(self.seller.username, show_start=2, show_end=1)
+            seller_line = f"<b>👤 فروشنده:</b> {escape(masked)} (شناسه: {self.seller.id})"
 
         lines = [
             title,
@@ -409,6 +412,21 @@ class Product (models.Model):
             lines.append(f"<b>⚙️ مشکل فنی:</b> {escape(self.technical_problem)}")
 
         return "\n".join([l for l in lines if l])
+
+    def _mask_text(self, text, show_start=2, show_end=1, mask_char='*'):
+        if not text:
+            return ''
+        try:
+            n = len(text)
+        except Exception:
+            return ''
+        tail_len = show_end if show_end and show_end > 0 else 0
+        if n <= show_start + tail_len:
+            return mask_char * n
+        head = text[:show_start]
+        tail = text[-tail_len:] if tail_len > 0 else ''
+        masked_mid = mask_char * (n - show_start - tail_len)
+        return head + masked_mid + tail
 
 
 def _product_pictures_changed(sender, instance, action, **kwargs):
