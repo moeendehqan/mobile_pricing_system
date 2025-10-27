@@ -294,12 +294,14 @@ class Product (models.Model):
         ordering = ['-seller__vip_sort','-created_at']
     def __str__(self):
         return f"{self.id} - {self.model_mobile.model_name} - {self.price}"
-    def send_channel(self, text):
+    def send_channel(self, obj):
         telegram = Telegram()
-        telegram.send_product_to_channel(text)
+        text = f'محصول {self.model_mobile.model_name} با قیمت {self.price}'
+        image = self.picture.first().image.url
+        telegram.send_product_to_channel(text,image)
     
     def save(self, *args, **kwargs):
-        self.send_channel(f'محصول {self.model_mobile.model_name} با قیمت {self.price} تومان فروخته شد')
+        self.send_channel(self)
         super().save(*args, **kwargs)
 
 class Order (models.Model) :

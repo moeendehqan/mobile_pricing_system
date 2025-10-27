@@ -29,7 +29,9 @@ class Telegram:
         response = requests.post(self.url + 'sendPhoto', params=params)
         return response.json()
 
-    def send_product_to_channel(self, product):
-        text = f'test:\n{product}'
-        self.send_message(self.chat_id_channel, text)
+    def send_product_to_channel(self, text, image=None):
+        if image:
+            self.send_photo(self.chat_id_channel, image, text)
+        else:
+            self.send_message(self.chat_id_channel, text)
     
