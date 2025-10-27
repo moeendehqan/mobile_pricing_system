@@ -248,6 +248,13 @@ class Product (models.Model):
         ('orginal','اورجینال'),
         ('repakage','رپیکیج'),
     ]
+    carton = models.CharField(
+        max_length=20,
+        choices=CARTON,
+        null=True,
+        blank=True,
+        verbose_name='جعبه'
+    )
 
     GRADE = [
         ('A','در حد نو'),
@@ -255,7 +262,6 @@ class Product (models.Model):
         ('C','خط و خش و ضربه جزئی'),
         ('D','نیاز به تعمیر'),
     ]
-
 
     grade = models.CharField(
         max_length=256,
