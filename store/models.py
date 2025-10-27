@@ -297,7 +297,7 @@ class Product (models.Model):
     def send_channel(self, obj):
         telegram = Telegram()
         text = f'محصول {self.model_mobile.model_name} با قیمت {self.price}'
-        image = self.picture.first().image.url
+        image = self.picture.first().file.url
         telegram.send_product_to_channel(text,image)
     
     def save(self, *args, **kwargs):
