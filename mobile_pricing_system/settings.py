@@ -19,7 +19,7 @@ SECRET_KEY = 'django-insecure-nhqnr779651&)c&9p4&jioq((x*@602jv%*bico@zwe8&@_v^i
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['shikala.com','api.shikala.com','127.0.0.1']
 
 
 
