@@ -3,6 +3,8 @@ from user.models import User
 from colorfield.fields import ColorField
 from utils.telegram import Telegram
 from utils.storage import CustomS3Storage
+import os
+import uuid
 
 
 
@@ -45,8 +47,12 @@ class PardNumber (models.Model):
         verbose_name_plural = ("پارت نامبر ها")
 
 class Picture (models.Model):
+    def _product_picture_upload_to(self, filename):
+        ext = os.path.splitext(filename)[1]
+        return f"product/picture/{uuid.uuid4().hex}{ext}"
+
     file = models.FileField(
-        upload_to=('product/picture/'),
+        upload_to=_product_picture_upload_to,
         null=True,
         blank=True,
         storage=CustomS3Storage(),

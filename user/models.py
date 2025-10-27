@@ -2,8 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from utils.storage import CustomS3Storage
+import uuid
+import os
 
 class User(AbstractUser):
+    def _user_picture_upload_to(self, filename):
+        ext = os.path.splitext(filename)[1]
+        return f"user/picture/{uuid.uuid4().hex}{ext}"
     username = models.CharField(
         max_length=255,
         unique=True,
@@ -107,25 +112,25 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(
         auto_now=True)
     business_license = models.ImageField(
-        upload_to='business_license/',
+        upload_to=_user_picture_upload_to,
         null=True,
         blank=True,
         storage=CustomS3Storage(),
-        verbose_name='جواز')
+        verbose_name='جواز کسب و کار')
     head_store_image = models.ImageField(
-        upload_to='head_store_image/',
+        upload_to=_user_picture_upload_to,
         null=True,
         blank=True,
         storage=CustomS3Storage(),  
         verbose_name='تصویر تابلو فروشگاه')
     store_window_image = models.ImageField(
-        upload_to='store_window_image/',
+        upload_to=_user_picture_upload_to,
         null=True,
         blank=True,
         storage=CustomS3Storage(),
         verbose_name='تصویر ویترین فروشگاه')
     Warranty_check_image = models.ImageField(
-        upload_to='Warranty_check_image/',
+        upload_to=_user_picture_upload_to,
         null=True,
         blank=True,
         storage=CustomS3Storage(),
