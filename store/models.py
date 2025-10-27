@@ -70,9 +70,8 @@ class Picture (models.Model):
         verbose_name_plural = ("تصاویر")
 
     def __str__(self):
-        if self.model_mobile:
-            return f"{self.model_mobile.brand} {self.model_mobile.model_name} - {self.seller.username if self.seller else 'بدون فروشنده'}"
-        return f"محصول {self.id}"
+        return self.name or f"تصویر {self.id}"
+
 
 
 class ModelMobile (models.Model):
