@@ -10,6 +10,8 @@ class Telegram:
         self.url = f'https://api.telegram.org/bot{self.token}/'
     
 
+
+
     def send_message(self, chat_id, text):
         params = {
             'chat_id': chat_id,
@@ -26,46 +28,8 @@ class Telegram:
             params['caption'] = caption
         response = requests.post(self.url + 'sendPhoto', params=params)
         return response.json()
-    def send_video(self, chat_id, video):
-        params = {
-            'chat_id': chat_id,
-            'video': video,
-        }
-        response = requests.post(self.url + 'sendVideo', params=params)
-        return response.json()
-    def send_document(self, chat_id, document):
-        params = {
-            'chat_id': chat_id,
-            'document': document,
-        }
-        response = requests.post(self.url + 'sendDocument', params=params)
-        return response.json()
-    def send_audio(self, chat_id, audio):
-        params = {
-            'chat_id': chat_id,
-            'audio': audio,
-        }
-        response = requests.post(self.url + 'sendAudio', params=params)
-        return response.json()
-    def send_voice(self, chat_id, voice):
-        params = {
-            'chat_id': chat_id,
-            'voice': voice,
-        }
-        response = requests.post(self.url + 'sendVoice', params=params)
-        return response.json()
-    def send_location(self, chat_id, location):
-        params = {
-            'chat_id': chat_id,
-            'location': location,
-        }
-        response = requests.post(self.url + 'sendLocation', params=params)
-        return response.json()
-    def send_contact(self, chat_id, contact):
-        params = {
-            'chat_id': chat_id,
-            'contact': contact,
-        }
-        response = requests.post(self.url + 'sendContact', params=params)
-        return response.json()
+
+    def send_product_to_channel(self, product):
+        text = f'test:\n{product}'
+        self.send_message(self.chat_id_channel, text)
     
