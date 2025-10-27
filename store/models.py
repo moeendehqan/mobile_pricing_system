@@ -6,6 +6,7 @@ from utils.telegram import Telegram
 from utils.storage import CustomS3Storage
 import os
 import uuid
+import html
 
 
 
@@ -355,32 +356,35 @@ class Product (models.Model):
         self.send_channel()
 
     def build_intro_message(self):
-        brand = self.model_mobile.brand if (self.model_mobile and self.model_mobile.brand) else None
-        model_name = self.model_mobile.model_name if self.model_mobile else None
-        title = f"📱 {brand or ''} {model_name or ''}".strip()
-        type_disp = self.get_type_product_display() if self.type_product else None
-        grade_disp = self.get_grade_display() if self.grade else None
+        escape = html.escape
+        brand = escape(self.model_mobile.brand) if (self.model_mobile and self.model_mobile.brand) else None
+        model_name = escape(self.model_mobile.model_name) if self.model_mobile else None
+        title_text = " ".join([x for x in [brand, model_name] if x]) or "محصول"
+        title = f"<b>📱 {title_text}</b>"
+
+        type_disp = escape(self.get_type_product_display()) if self.type_product else None
+        grade_disp = escape(self.get_grade_display()) if self.grade else None
         status_line = None
         if type_disp or grade_disp:
             parts = []
             if type_disp:
-                parts.append(f"وضعیت: {type_disp}")
+                parts.append(f"<b>🎯 وضعیت:</b> {type_disp}")
             if grade_disp:
-                parts.append(f"درجه: {grade_disp}")
+                parts.append(f"<b>🔖 درجه:</b> {grade_disp}")
             status_line = " | ".join(parts)
 
-        color_line = f"رنگ: {self.color.name}" if self.color else None
-        battery_line = f"سلامت باتری: {self.battry_health}%" + (" (تعویض شده)" if self.battry_change else "")
-        guarantor_line = f"گارانتی: {self.guarantor} ماه" if self.guarantor else "گارانتی: ندارد"
-        carton_disp = self.get_carton_display() if self.carton else None
-        carton_line = f"جعبه: {carton_disp}" if carton_disp else None
-        repaired_line = f"تعمیر شده: {'بله' if self.repaired else 'خیر'}"
-        auction_line = f"مزایده: {'بله' if self.auction else 'خیر'}"
-        status_product_disp = self.get_status_product_display() if self.status_product else None
-        status_product_line = f"وضعیت فروش: {status_product_disp}" if status_product_disp else None
-        price_line = f"قیمت: {self.price:,} تومان" if self.price else "قیمت: نامشخص"
-        part_line = f"پارت نامبر: {self.part_num}" if self.part_num else None
-        seller_line = f"فروشنده: {self.seller.username}" if self.seller else None
+        color_line = f"<b>🎨 رنگ:</b> {escape(self.color.name)}" if self.color else None
+        battery_line = f"<b>🔋 باتری:</b> {self.battry_health}%" + (" (تعویض شده)" if self.battry_change else "")
+        guarantor_line = f"<b>🛡️ گارانتی:</b> {self.guarantor} ماه" if self.guarantor else "<b>🛡️ گارانتی:</b> ندارد"
+        carton_disp = escape(self.get_carton_display()) if self.carton else None
+        carton_line = f"<b>🧰 جعبه:</b> {carton_disp}" if carton_disp else None
+        repaired_line = f"<b>🛠️ تعمیر شده:</b> {'بله' if self.repaired else 'خیر'}"
+        auction_line = f"<b>🏷️ مزایده:</b> {'بله' if self.auction else 'خیر'}"
+        status_product_disp = escape(self.get_status_product_display()) if self.status_product else None
+        status_product_line = f"<b>📦 وضعیت فروش:</b> {status_product_disp}" if status_product_disp else None
+        price_line = f"<b>💰 قیمت:</b> {self.price:,} تومان" if self.price else "<b>💰 قیمت:</b> نامشخص"
+        part_line = f"<b>🧩 پارت نامبر:</b> {escape(self.part_num)}" if self.part_num else None
+        seller_line = f"<b>👤 فروشنده:</b> {escape(self.seller.username)}" if self.seller else None
 
         lines = [
             title,
@@ -398,11 +402,11 @@ class Product (models.Model):
         ]
 
         if self.description:
-            lines.append(f"توضیحات: {self.description}")
+            lines.append(f"<b>📝 توضیحات:</b> {escape(self.description)}")
         if self.description_appearance:
-            lines.append(f"ظاهر: {self.description_appearance}")
+            lines.append(f"<b>✨ ظاهر:</b> {escape(self.description_appearance)}")
         if self.technical_problem:
-            lines.append(f"مشکل فنی: {self.technical_problem}")
+            lines.append(f"<b>⚙️ مشکل فنی:</b> {escape(self.technical_problem)}")
 
         return "\n".join([l for l in lines if l])
 

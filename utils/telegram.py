@@ -12,17 +12,19 @@ class Telegram:
 
 
 
-    def send_message(self, chat_id, text):
+    def send_message(self, chat_id, text, parse_mode="HTML"):
         params = {
             'chat_id': chat_id,
             'text': text,
+            'parse_mode': parse_mode,
         }
         response = requests.post(self.url + 'sendMessage', data=params)
         return response.json()
-    def send_photo(self, chat_id, photo, caption=None):
+    def send_photo(self, chat_id, photo, caption=None, parse_mode="HTML"):
         params = {
             'chat_id': chat_id,
             'photo': photo,
+            'parse_mode': parse_mode,
         }
         if caption is not None:
             params['caption'] = caption
@@ -35,31 +37,34 @@ class Telegram:
         else:
             self.send_message(self.chat_id_channel, text)
     
-    def edit_message_text(self, chat_id, message_id, text):
+    def edit_message_text(self, chat_id, message_id, text, parse_mode="HTML"):
         params = {
             'chat_id': chat_id,
             'message_id': message_id,
             'text': text,
+            'parse_mode': parse_mode,
         }
         response = requests.post(self.url + 'editMessageText', data=params)
         return response.json()
 
-    def edit_message_caption(self, chat_id, message_id, caption):
+    def edit_message_caption(self, chat_id, message_id, caption, parse_mode="HTML"):
         params = {
             'chat_id': chat_id,
             'message_id': message_id,
             'caption': caption,
+            'parse_mode': parse_mode,
         }
         response = requests.post(self.url + 'editMessageCaption', data=params)
         return response.json()
 
-    def edit_message_media(self, chat_id, message_id, photo, caption=None):
+    def edit_message_media(self, chat_id, message_id, photo, caption=None, parse_mode="HTML"):
         media = {
             'type': 'photo',
             'media': photo,
         }
         if caption is not None:
             media['caption'] = caption
+            media['parse_mode'] = parse_mode
         payload = {
             'chat_id': chat_id,
             'message_id': message_id,
