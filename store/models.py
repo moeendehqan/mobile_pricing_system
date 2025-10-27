@@ -296,7 +296,7 @@ class Product (models.Model):
         return f"{self.id} - {self.model_mobile.model_name} - {self.price}"
     def send_channel(self, text):
         telegram = Telegram()
-        telegram.send_message(self.chat_id_channel, text)
+        telegram.send_message(text)
         return telegram.send_message(self.chat_id_channel, text)
     
     def save(self, *args, **kwargs):
