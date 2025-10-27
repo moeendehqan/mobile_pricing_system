@@ -8,8 +8,4 @@ services:
       - ./staticfiles:/app/staticfiles
     env_file:
       - .env
-    environment:
-      MINIO_ACCESS_KEY: "M0P0pT0ShSorWYCpePCi"
-      MINIO_SECRET_KEY: "E0k68nU1A1VYJtVSKI3Eh7VMIPlJ5znmk9ib0LEF"
-      MINIO_BUCKET: "shikala"
-      MINIO_ENDPOINT: "https://minio.shikala.com"
+
