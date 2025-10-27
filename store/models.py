@@ -315,8 +315,7 @@ class Product (models.Model):
     def send_channel(self):
         telegram = Telegram()
         chat_id = telegram.chat_id_channel
-        model_name = self.model_mobile.model_name if self.model_mobile else 'نامشخص'
-        text = f'محصول {model_name} با قیمت {self.price}\n{self.grade} - {self.type_product}'
+        text = self.build_intro_message()
         first_picture = self.picture.first()
         image_url = None
         if first_picture and getattr(first_picture, 'file', None):
@@ -350,10 +349,62 @@ class Product (models.Model):
                     telegram_message_id=self.telegram_message_id,
                     telegram_has_photo=self.telegram_has_photo
                 )
-    
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.send_channel()
+
+    def build_intro_message(self):
+        brand = self.model_mobile.brand if (self.model_mobile and self.model_mobile.brand) else None
+        model_name = self.model_mobile.model_name if self.model_mobile else None
+        title = f"📱 {brand or ''} {model_name or ''}".strip()
+        type_disp = self.get_type_product_display() if self.type_product else None
+        grade_disp = self.get_grade_display() if self.grade else None
+        status_line = None
+        if type_disp or grade_disp:
+            parts = []
+            if type_disp:
+                parts.append(f"وضعیت: {type_disp}")
+            if grade_disp:
+                parts.append(f"درجه: {grade_disp}")
+            status_line = " | ".join(parts)
+
+        color_line = f"رنگ: {self.color.name}" if self.color else None
+        battery_line = f"سلامت باتری: {self.battry_health}%" + (" (تعویض شده)" if self.battry_change else "")
+        guarantor_line = f"گارانتی: {self.guarantor} ماه" if self.guarantor else "گارانتی: ندارد"
+        carton_disp = self.get_carton_display() if self.carton else None
+        carton_line = f"جعبه: {carton_disp}" if carton_disp else None
+        repaired_line = f"تعمیر شده: {'بله' if self.repaired else 'خیر'}"
+        auction_line = f"مزایده: {'بله' if self.auction else 'خیر'}"
+        status_product_disp = self.get_status_product_display() if self.status_product else None
+        status_product_line = f"وضعیت فروش: {status_product_disp}" if status_product_disp else None
+        price_line = f"قیمت: {self.price:,} تومان" if self.price else "قیمت: نامشخص"
+        part_line = f"پارت نامبر: {self.part_num}" if self.part_num else None
+        seller_line = f"فروشنده: {self.seller.username}" if self.seller else None
+
+        lines = [
+            title,
+            price_line,
+            status_line,
+            color_line,
+            battery_line,
+            guarantor_line,
+            carton_line,
+            repaired_line,
+            auction_line,
+            status_product_line,
+            part_line,
+            seller_line,
+        ]
+
+        if self.description:
+            lines.append(f"توضیحات: {self.description}")
+        if self.description_appearance:
+            lines.append(f"ظاهر: {self.description_appearance}")
+        if self.technical_problem:
+            lines.append(f"مشکل فنی: {self.technical_problem}")
+
+        return "\n".join([l for l in lines if l])
 
 
 def _product_pictures_changed(sender, instance, action, **kwargs):
