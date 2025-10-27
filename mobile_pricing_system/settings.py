@@ -21,6 +21,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['shikala.com','api.shikala.com','127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://shikala.com",
+    "https://api.shikala.com",
+]
 
 
 AUTH_USER_MODEL = 'user.User'
