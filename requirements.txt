@@ -11,3 +11,4 @@ asyncio
 django-colorfield
 boto3
 django-storages
+gunicorn
