@@ -2,6 +2,7 @@ from django.db import models
 from user.models import User
 from colorfield.fields import ColorField
 from utils.telegram import Telegram
+from utils.storage import CustomS3Storage
 
 
 
@@ -48,6 +49,7 @@ class Picture (models.Model):
         upload_to=('product/picture/'),
         null=True,
         blank=True,
+        storage=CustomS3Storage(),
         verbose_name='تصویر'
     )
 
