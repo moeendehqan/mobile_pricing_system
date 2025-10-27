@@ -173,7 +173,7 @@ TELEGRAM_TOKEN = '8420073319:AAFFEf0Gi0LhNXXhKMe0TFKFSkAWoEJ9FiI'
 CHAT_ID_CHANNEL = '-1003215317476'
 
 
-DEFAULT_FILE_STORAGE = 'utils.storages.MediaStorage'
+DEFAULT_FILE_STORAGE = 'utils.storage.MediaStorage'
 MEDIA_URL = 'https://minio.shikala.com/shikala/media/'
-STATICFILES_STORAGE = 'utils.storages.StaticStorage'
+STATICFILES_STORAGE = 'utils.storage.StaticStorage'
 STATIC_URL = 'https://minio.shikala.com/shikala/static/'

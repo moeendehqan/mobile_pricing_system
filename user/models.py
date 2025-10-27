@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from utils.storages import CustomS3Storage
+from utils.storage import CustomS3Storage
 
 class User(AbstractUser):
     username = models.CharField(
