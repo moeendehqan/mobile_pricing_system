@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import m2m_changed
 from user.models import User
 from colorfield.fields import ColorField
 from utils.telegram import Telegram
@@ -292,6 +293,17 @@ class Product (models.Model):
     updated_at = models.DateTimeField(
         auto_now=True)
 
+    telegram_message_id = models.BigIntegerField(
+        null=True,
+        blank=True,
+        verbose_name='شناسه پیام تلگرام'
+    )
+
+    telegram_has_photo = models.BooleanField(
+        default=False,
+        verbose_name='پیام تصویری'
+    )
+
 
     class Meta:
         verbose_name = ("محصول")
@@ -302,6 +314,7 @@ class Product (models.Model):
         return f"{self.id} - {self.model_mobile.model_name} - {self.price}"
     def send_channel(self):
         telegram = Telegram()
+        chat_id = telegram.chat_id_channel
         model_name = self.model_mobile.model_name if self.model_mobile else 'نامشخص'
         text = f'محصول {model_name} با قیمت {self.price}\n{self.grade} - {self.type_product}'
         first_picture = self.picture.first()
@@ -311,11 +324,43 @@ class Product (models.Model):
                 image_url = first_picture.file.url
             except Exception:
                 image_url = None
-        telegram.send_product_to_channel(text, image_url)
+
+        if self.telegram_message_id:
+            if self.telegram_has_photo:
+                if image_url:
+                    telegram.edit_message_media(chat_id, self.telegram_message_id, image_url, text)
+                else:
+                    telegram.edit_message_caption(chat_id, self.telegram_message_id, text)
+            else:
+                telegram.edit_message_text(chat_id, self.telegram_message_id, text)
+        else:
+            if image_url:
+                resp = telegram.send_photo(chat_id, image_url, text)
+                self.telegram_message_id = (resp.get('result') or {}).get('message_id')
+                self.telegram_has_photo = True
+                Product.objects.filter(pk=self.pk).update(
+                    telegram_message_id=self.telegram_message_id,
+                    telegram_has_photo=self.telegram_has_photo
+                )
+            else:
+                resp = telegram.send_message(chat_id, text)
+                self.telegram_message_id = (resp.get('result') or {}).get('message_id')
+                self.telegram_has_photo = False
+                Product.objects.filter(pk=self.pk).update(
+                    telegram_message_id=self.telegram_message_id,
+                    telegram_has_photo=self.telegram_has_photo
+                )
     
     def save(self, *args, **kwargs):
-        self.send_channel()
         super().save(*args, **kwargs)
+        self.send_channel()
+
+
+def _product_pictures_changed(sender, instance, action, **kwargs):
+    if action in ("post_add", "post_remove", "post_clear"):
+        instance.send_channel()
+
+m2m_changed.connect(_product_pictures_changed, sender=Product.picture.through)
 
 class Order (models.Model) :
     product = models.ForeignKey(

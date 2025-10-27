@@ -35,3 +35,36 @@ class Telegram:
         else:
             self.send_message(self.chat_id_channel, text)
     
+    def edit_message_text(self, chat_id, message_id, text):
+        params = {
+            'chat_id': chat_id,
+            'message_id': message_id,
+            'text': text,
+        }
+        response = requests.post(self.url + 'editMessageText', data=params)
+        return response.json()
+
+    def edit_message_caption(self, chat_id, message_id, caption):
+        params = {
+            'chat_id': chat_id,
+            'message_id': message_id,
+            'caption': caption,
+        }
+        response = requests.post(self.url + 'editMessageCaption', data=params)
+        return response.json()
+
+    def edit_message_media(self, chat_id, message_id, photo, caption=None):
+        media = {
+            'type': 'photo',
+            'media': photo,
+        }
+        if caption is not None:
+            media['caption'] = caption
+        payload = {
+            'chat_id': chat_id,
+            'message_id': message_id,
+            'media': media,
+        }
+        response = requests.post(self.url + 'editMessageMedia', json=payload)
+        return response.json()
+    
