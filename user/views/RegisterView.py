@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
-from .serializers import UserInputSerializer
-from .models import User
+from user.serializers import UserInputSerializer
+from user.models import User
 
 
 

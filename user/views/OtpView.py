@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
 from utils.message import MessageMelipayamak
-from .serializers import OtpInputSerializer
-from .models import Otp
+from user.serializers import OtpInputSerializer
+from user.models import Otp
 import random
 
 
