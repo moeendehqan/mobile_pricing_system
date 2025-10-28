@@ -154,9 +154,12 @@ class ModelMobile (models.Model):
     def save(self, *args, **kwargs):
         if self.is_apple:
             self.brand = 'اپل'
-        if self.colors.count() == 0:
-            self.colors.add(Color.objects.all())
+        creating = self.pk is None
+        # Save first to ensure we have a PK before touching M2M relations
         super().save(*args, **kwargs)
+        # On initial create, if no colors were provided, default to all colors
+        if creating and self.colors.count() == 0:
+            self.colors.set(Color.objects.all())
 
     def __str__(self):
         return self.model_name
