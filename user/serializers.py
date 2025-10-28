@@ -17,6 +17,33 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    business_license = serializers.ImageField(required=False, allow_null=True)
+    head_store_image = serializers.ImageField(required=False, allow_null=True)
+    store_window_image = serializers.ImageField(required=False, allow_null=True)
+    Warranty_check_image = serializers.ImageField(required=False, allow_null=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'mobile',
+            'address',
+            'city',
+            'company',
+            'sheba_number',
+            'card_number',
+            'account_number',
+            'account_bank',
+            'business_license',
+            'head_store_image',
+            'store_window_image',
+            'Warranty_check_image',
+        ]
+
+
 class OtpSerializer(serializers.ModelSerializer):
     class Meta:
         model = Otp
