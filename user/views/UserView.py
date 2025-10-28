@@ -4,7 +4,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from user.serializers import UserSerializer
 from user.models import User
-
+from drf_spectacular.utils import extend_schema
+ 
 
 
 class UserUpdateView(APIView):
