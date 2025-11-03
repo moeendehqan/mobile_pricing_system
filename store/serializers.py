@@ -46,6 +46,18 @@ class ProductSerializer(serializers.ModelSerializer):
     model_mobile = serializers.PrimaryKeyRelatedField(
         queryset=ModelMobile.objects.all()
     )
+
+
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+
+
+class ProductReadSerializer(serializers.ModelSerializer):
+    picture = PictureSerializer(many=True, read_only=True)
+    model_mobile = MobileSerializer(read_only=True)
+
     is_available = serializers.SerializerMethodField()
     reversed_to = serializers.SerializerMethodField()
 
@@ -69,17 +81,6 @@ class ProductSerializer(serializers.ModelSerializer):
         if Order.objects.filter(product=obj, status__in=['approved', 'confirmed']).exists():
             return False
         return True
-
-    class Meta:
-        model = Product
-        fields = "__all__"
-
-
-
-class ProductReadSerializer(serializers.ModelSerializer):
-    picture = PictureSerializer(many=True, read_only=True)
-    model_mobile = MobileSerializer(read_only=True)
-
     class Meta:
         model = Product
         fields = "__all__"
