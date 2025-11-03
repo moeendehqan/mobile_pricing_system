@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import Product , Order , Picture , ModelMobile, Color, PardNumber
+from datetime import timedelta
+from django.utils import timezone
 from user.serializers import UserSerializer
-
 
 
 class ColorSerializer(serializers.ModelSerializer):
@@ -45,6 +46,29 @@ class ProductSerializer(serializers.ModelSerializer):
     model_mobile = serializers.PrimaryKeyRelatedField(
         queryset=ModelMobile.objects.all()
     )
+    is_available = serializers.SerializerMethodField()
+    reversed_to = serializers.SerializerMethodField()
+
+    def get_reversed_to(self, obj):
+        # Only consider active reservations (ordering status)
+        latest_created_at = (
+            Order.objects
+            .filter(product=obj, status='ordering')
+            .values_list('created_at', flat=True)
+            .order_by('-created_at')
+            .first()
+        )
+        if not latest_created_at:
+            return None
+        to = latest_created_at + timedelta(minutes=10)
+        return to if to > timezone.now() else None
+                
+    def get_is_available(self, obj):
+        if self.get_reversed_to(obj):
+            return False
+        if Order.objects.filter(product=obj, status__in=['approved', 'confirmed']).exists():
+            return False
+        return True
 
     class Meta:
         model = Product
