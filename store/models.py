@@ -1,12 +1,15 @@
 from django.db import models
 from django.db.models.signals import m2m_changed
-from user.models import User
 from colorfield.fields import ColorField
 from utils.telegram import Telegram
 from utils.storage import CustomS3Storage
 import os
 import uuid
 import html
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 

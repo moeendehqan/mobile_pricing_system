@@ -96,10 +96,10 @@ WSGI_APPLICATION = 'mobile_pricing_system.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mobile',
-        'USER': 'postgres',
-        'PASSWORD': 'Moeen00006168',
-        'HOST': '193.56.135.20',
+        'NAME': 'shikala_db',
+        'USER': 'admin',
+        'PASSWORD': 'Moeen....6168',
+        'HOST': '193.56.135.13',
         'PORT': '5432',
     }
 }
