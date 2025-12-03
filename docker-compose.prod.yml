@@ -4,5 +4,7 @@ services:
     image: ${IMAGE_NAME}
     ports:
       - "4040:8000"
+    volumes:
+      - ./staticfiles:/app/staticfiles
     env_file:
       - .env
