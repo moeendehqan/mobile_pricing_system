@@ -195,6 +195,10 @@ class Product (models.Model):
         null= True,
         blank= True,
         verbose_name='قیمت')
+    
+    customer_price = models.BigIntegerField(
+        default=0,
+        verbose_name='قیمت مشتری')
 
     color =models.ForeignKey(Color,on_delete=models.SET_NULL , null=True, verbose_name='رنگ')
 
