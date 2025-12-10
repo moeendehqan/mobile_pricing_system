@@ -45,7 +45,6 @@ class ProductViewSet(APIView):
     @extend_schema(request=ProductInputSerializer)
     def post(self, request):
         request.data['seller'] = request.user.id
-
         # 🟢 model_mobile فقط id بمونه
         model_mobile_data = request.data.get('model_mobile', None)
         if isinstance(model_mobile_data, dict):
@@ -75,7 +74,11 @@ class ProductViewSet(APIView):
             serializer = ProductReadSerializer(product)
             return Response(serializer.data)
         else:
-            products = Product.objects.all()
+            self_product = request.data.get('self_product', False)
+            if self_product:
+                products = Product.objects.filter(seller=request.user)
+            else:
+                products = Product.objects.all()
             serializer = ProductReadSerializer(products,many=True)
             return Response(serializer.data)
 
@@ -101,6 +104,8 @@ class ProductViewSet(APIView):
             return Response({"error":"Product not found"},status=status.HTTP_404_NOT_FOUND)
         product.delete()
         return Response("product deleted",status=status.HTTP_200_OK)
+
+
 
 
 class OrderViewSet(APIView):
