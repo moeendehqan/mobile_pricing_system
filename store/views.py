@@ -74,11 +74,9 @@ class ProductViewSet(APIView):
             serializer = ProductReadSerializer(product)
             return Response(serializer.data)
         else:
-            self_product = request.data.get('self_product', False)
-            if self_product:
-                products = Product.objects.filter(seller=request.user)
-            else:
-                products = Product.objects.all()
+            sp = request.query_params.get('self_product')
+            self_product = str(sp).strip().lower() in ['1','true','yes','on'] if sp is not None else False
+            products = Product.objects.filter(seller=request.user) if self_product else Product.objects.all()
             serializer = ProductReadSerializer(products,many=True)
             return Response(serializer.data)
 
