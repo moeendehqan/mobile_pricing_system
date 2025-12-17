@@ -14,6 +14,15 @@ class User(AbstractUser):
         unique=True,
 
         verbose_name='کاربر')
+    type_choices = [
+        ('customer', 'مشتری'),
+        ('seller', 'همکار'),
+    ]
+    type_client= models.CharField(
+        max_length=10,
+        choices=type_choices,
+        default='customer',
+        verbose_name='نوع کاربر')
 
     uniqidentifier = models.CharField(
         max_length=255,
