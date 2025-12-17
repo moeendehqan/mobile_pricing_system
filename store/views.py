@@ -95,9 +95,8 @@ class ProductViewSet(APIView):
 
 
     def delete (self,request,id):
-        user
+        user = request.user
         product = Product.objects.filter(id=id).first()
-        
         if not product :
             return Response({"error":"محصول یافت نشد"},status=status.HTTP_404_NOT_FOUND)
         if product.seller != user :
