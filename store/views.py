@@ -95,11 +95,13 @@ class ProductViewSet(APIView):
 
 
     def delete (self,request,id):
-        if not request.user.has_perm('store.can_delete_products'):
-            return Response({"error":"You are not allowed to delete products"},status=status.HTTP_403_FORBIDDEN)
+        user
         product = Product.objects.filter(id=id).first()
+        
         if not product :
-            return Response({"error":"Product not found"},status=status.HTTP_404_NOT_FOUND)
+            return Response({"error":"محصول یافت نشد"},status=status.HTTP_404_NOT_FOUND)
+        if product.seller != user :
+            return Response({"error":"شما فقط میتوانید محصول خود را حذف کنید"},status=status.HTTP_403_FORBIDDEN)
         product.delete()
         return Response("product deleted",status=status.HTTP_200_OK)
 
