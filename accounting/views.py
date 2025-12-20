@@ -1,12 +1,13 @@
 from django.shortcuts import render
-from rest_framework import APIVIEW
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from .models import transactions
 from .serializers import transactionsSerializer
 
 
 
 # Create your views here.
-class transactionsView(APIVIEW):
+class transactionsView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         transactions = transactions.objects.filter(user=request.user)
@@ -14,7 +15,7 @@ class transactionsView(APIVIEW):
         return Response(serializer.data)
 
 
-class BalanceView(APIVIEW):
+class BalanceView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         balance = transactions.objects.filter(user=request.user).aggregate(Sum('bede'), Sum('best'))
