@@ -23,22 +23,33 @@ class PictureViewSet(APIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
     def get (self, request,id=None):
-        if id :
-            picture = Picture.objects.get(id=id)
-            serializer = PictureSerializer(picture)
-            return Response(serializer.data)
-        else:
-            pictures = Picture.objects.all()
-            serializer = PictureSerializer(pictures,many=True)
-            return Response(serializer.data)
+        cache_key = f'picture_{id}' if id else 'picture_all'
+        picture = cache.get(cache_key)
+        if picture is None:
+            if id :
+                picture = Picture.objects.get(id=id)
+                serializer = PictureSerializer(picture)
+                cache.set(cache_key, serializer.data, 60*5)
+                return Response(serializer.data)
+            else:
+                pictures = Picture.objects.all()
+                serializer = PictureSerializer(pictures,many=True)
+                cache.set(cache_key, serializer.data, 60*5)
+                return Response(serializer.data)
 
 class ModelMobileViewSet(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, id=None):
-        if id==None:
-           model_mobile = ModelMobile.objects.all()
-           serializer = MobileSerializer(model_mobile, many=True)
-        return Response(serializer.data)
+        cache_key = f'model_mobile_{id}' if id else 'model_mobile_all'
+        model_mobile = cache.get(cache_key)
+        if model_mobile is None:
+            if id==None:
+               model_mobile = ModelMobile.objects.all()
+               serializer = MobileSerializer(model_mobile, many=True)
+            cache.set(cache_key, serializer.data, 60*5)
+            return Response(serializer.data)
+        cache.set(cache_key, model_mobile, 60*5)
+        return Response(model_mobile)
 
 class ProductViewSet(APIView):
     permission_classes = [IsAuthenticated]
@@ -69,16 +80,21 @@ class ProductViewSet(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get (self, request,id=None):
-        if id :
-            product = Product.objects.get(id=id)
-            serializer = ProductReadSerializer(product)
-            return Response(serializer.data)
-        else:
-            sp = request.query_params.get('self_product')
-            self_product = str(sp).strip().lower() in ['1','true','yes','on'] if sp is not None else False
-            products = Product.objects.filter(seller=request.user) if self_product else Product.objects.all()
-            serializer = ProductReadSerializer(products,many=True)
-            return Response(serializer.data)
+        cache_key = f'product_{id}' if id else 'product_all'
+        product = cache.get(cache_key)
+        if product is None:
+            if id :
+                product = Product.objects.get(id=id)
+                serializer = ProductReadSerializer(product)
+                cache.set(cache_key, serializer.data, 60*5)
+                return Response(serializer.data)
+            else:
+                sp = request.query_params.get('self_product')
+                self_product = str(sp).strip().lower() in ['1','true','yes','on'] if sp is not None else False
+                products = Product.objects.filter(seller=request.user) if self_product else Product.objects.all()
+                serializer = ProductReadSerializer(products,many=True)
+                cache.set(cache_key, serializer.data, 60*5)
+                return Response(serializer.data)
 
 
     def patch (self,request,id):
@@ -172,6 +188,11 @@ class StatisticViewSet(APIView):
 class PardNumberViewSet(APIView):
     permission_classes = [IsAuthenticated]
     def get (self,request):
-        pard_number = PardNumber.objects.all()
-        serializer = PardNumberSerializer(pard_number,many=True)
-        return Response(serializer.data)
+        cache_key = 'pard_number_all'
+        pard_number = cache.get(cache_key)
+        if pard_number is None:
+            pard_number = PardNumber.objects.all()
+            serializer = PardNumberSerializer(pard_number,many=True)
+            cache.set(cache_key, serializer.data, 60*5)
+            return Response(serializer.data)
+        return Response(pard_number)
