@@ -10,6 +10,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import PictureInputSerializer , ProductInputSerializer , OrderInputSerializer, ProductReadSerializer
 from django.db.models import Sum
+from django.core.cache import cache
 
 class PictureViewSet(APIView):
     permission_classes = [IsAuthenticated]
@@ -46,9 +47,9 @@ class ModelMobileViewSet(APIView):
             if id==None:
                model_mobile = ModelMobile.objects.all()
                serializer = MobileSerializer(model_mobile, many=True)
-            cache.set(cache_key, serializer.data, 60*5)
+            cache.set(cache_key, serializer.data, 60*60)
             return Response(serializer.data)
-        cache.set(cache_key, model_mobile, 60*5)
+        cache.set(cache_key, model_mobile, 60*60)
         return Response(model_mobile)
 
 class ProductViewSet(APIView):
@@ -93,7 +94,7 @@ class ProductViewSet(APIView):
                 self_product = str(sp).strip().lower() in ['1','true','yes','on'] if sp is not None else False
                 products = Product.objects.filter(seller=request.user) if self_product else Product.objects.all()
                 serializer = ProductReadSerializer(products,many=True)
-                cache.set(cache_key, serializer.data, 60*5)
+                cache.set(cache_key, serializer.data, 60*10)
                 return Response(serializer.data)
 
 
