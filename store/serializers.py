@@ -57,6 +57,8 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductReadSerializer(serializers.ModelSerializer):
     picture = PictureSerializer(many=True, read_only=True)
     model_mobile = MobileSerializer(read_only=True)
+    pard_number = PardNumberSerializer(many=True, read_only=True)
+    colors = ColorSerializer(many=True, read_only=True)
 
     is_available = serializers.SerializerMethodField()
     reversed_to = serializers.SerializerMethodField()
