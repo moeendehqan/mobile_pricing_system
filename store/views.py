@@ -96,6 +96,7 @@ class ProductViewSet(APIView):
                 serializer = ProductReadSerializer(products,many=True)
                 cache.set(cache_key, serializer.data, 60*10)
                 return Response(serializer.data)
+        return Response(product)
 
 
     def patch (self,request,id):
