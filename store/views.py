@@ -100,11 +100,11 @@ class ProductViewSet(APIView):
 
 
     def patch (self,request,id):
-        if not request.user.has_perm('store.can_update_products'):
-            return Response({"error":"You are not allowed to update products"},status=status.HTTP_403_FORBIDDEN)
         product = Product.objects.filter(id=id).first()
         if not product :
             return Response({"error":"Product not found"},status=status.HTTP_404_NOT_FOUND)
+        if request.user != product.seller :
+            return Response({"error":"You are not allowed to update this product"},status=status.HTTP_403_FORBIDDEN)
         serializer = ProductSerializer(product,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
