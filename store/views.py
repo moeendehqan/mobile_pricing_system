@@ -105,6 +105,7 @@ class ProductViewSet(APIView):
             return Response({"error":"Product not found"},status=status.HTTP_404_NOT_FOUND)
         if request.user != product.seller :
             return Response({"error":"You are not allowed to update this product"},status=status.HTTP_403_FORBIDDEN)
+        request.data['model_mobile'] = request.data['model_mobile'].get('id')
         serializer = ProductSerializer(product,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
