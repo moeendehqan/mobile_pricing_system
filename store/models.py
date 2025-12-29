@@ -179,6 +179,9 @@ class Product (models.Model):
         default=True,
         verbose_name=' رجیستر شده'
     )
+    charge_cicle = models.PositiveIntegerField(
+        default=0,
+        verbose_name='میزان شارژ هر دوره')
 
     description = models.TextField(
         null= True,
