@@ -175,6 +175,10 @@ class Product (models.Model):
         related_name='product_seller',
         verbose_name='فروشنده'
     )
+    registered = models.BooleanField(
+        default=True,
+        verbose_name=' رجیستر شده'
+    )
 
     description = models.TextField(
         null= True,
