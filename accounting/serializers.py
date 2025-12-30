@@ -6,3 +6,9 @@ class transactionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = transactions
         fields = '__all__'  
+
+
+class TransactionInputSerializer(serializers.Serializer):
+    amount = serializers.IntegerField()
+    
+    

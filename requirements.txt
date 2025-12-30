@@ -12,3 +12,4 @@ django-colorfield
 boto3
 django-storages
 gunicorn
+zarinpal-py-sdk
