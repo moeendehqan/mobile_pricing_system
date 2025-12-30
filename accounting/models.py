@@ -7,7 +7,7 @@ class transactions(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     bede = models.PositiveIntegerField(default=0)
     best = models.PositiveIntegerField(default=0)
-    uniqidentifier = models.CharField(max_length=10, null=True, blank=True, verbose_name='شناسه پرداخت')
+    uniqidentifier = models.CharField(max_length=255, null=True, blank=True, verbose_name='شناسه پرداخت')
     transaction_type = models.CharField(max_length=10, choices=[('online', 'انلاین'), ('offline', 'فیش')], default='online')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
