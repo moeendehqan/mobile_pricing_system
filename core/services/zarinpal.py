@@ -30,7 +30,7 @@ class ZarinpalService:
             "amount": amount,
             "description": description,
             "callback_url": self.callback_url,
-            "mobile": user.phone_number,
+            "mobile": user.mobile,
         })
         if "data" in response and "authority" in response["data"]:
             authority = response["data"]["authority"]
