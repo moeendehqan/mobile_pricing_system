@@ -23,7 +23,7 @@ class transactionsView(APIView):
 class BalanceView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        balance = transactions.objects.filter(user=request.user).aggregate(Sum('bede'), Sum('best'))
+        balance = transactions.objects.filter(user=request.user, is_confirmed=True).aggregate(Sum('bede'), Sum('best'))
         balance['bede'] = balance['bede__sum'] or 0
         balance['best'] = balance['best__sum'] or 0
         return Response(balance)
